@@ -53,7 +53,7 @@ public class Lock {
 	 *            锁名称
 	 * @return
 	 */
-	public static Lock createLock(String host, String port, String lock) {
+	public static Lock create(String host, String port, String lock) {
 		Lock zkLock = new Lock(host, port, lock);
 		zkLock.connectZooKeeper();
 		return zkLock;
