@@ -5,7 +5,7 @@
 
 	<groupId>xuyihao</groupId>
 	<artifactId>zk-client</artifactId>
-	<version>1.0</version>
+	<version>1.0.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,7 +14,7 @@
 	</properties>
 
 	<build>
-		<finalName>zk-client-1.0</finalName>
+		<finalName>zk-client-${version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
