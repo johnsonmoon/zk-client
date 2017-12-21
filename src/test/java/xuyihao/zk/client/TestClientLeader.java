@@ -1,10 +1,8 @@
 package xuyihao.zk.client;
 
-import xuyihao.zk.client.core.Leader;
-
 /**
  * 启动多个测试进程，并观察控制台消息，适时结束其中单个进程，观察控制台消息
- *
+ * <p>
  * Created by xuyh at 2017/12/14 15:57.
  */
 public class TestClientLeader {
@@ -19,7 +17,9 @@ public class TestClientLeader {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(String.format("[%3d] Is leader? : [%s]", count, Leader.isLeader()));
+			System.out.println(
+					"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+			System.out.println(String.format("[%3d] Is leader? : [%s]", count, ClientFactory.getZkClient().isLeader()));
 			if (count == 600) {
 				interrupt = true;
 			}

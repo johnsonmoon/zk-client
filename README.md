@@ -1,6 +1,10 @@
 # zk-client
 light zookeeper client program
 
+## Update Information
+- 1.0.1
+Leader selector zookeeper reconnection.
+
 ## usage
 ### distributed task lock
 

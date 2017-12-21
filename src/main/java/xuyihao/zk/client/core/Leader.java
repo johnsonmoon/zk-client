@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Created by xuyh at 2017/11/30 14:40.
- * 
+ * <p>
  * <pre>
  * 子节点监听方式
  *
@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class Leader {
 	private static Logger logger = LoggerFactory.getLogger(Leader.class);
-	private static Leader zkLeader;
 	private final static String BASE_NODE_PATH = "/Leader";
 	private final static String CHILD_NODE_PATH = "host_process_no_";
 	private String finalNodePath;
@@ -32,56 +31,81 @@ public class Leader {
 	private ZooKeeper zooKeeper;
 	private PreviousNodeWatcher previousNodeWatcher;
 
+	private boolean registered = false;//是否成功注册子节点标志位(是否成功注册领导竞争)
 	private boolean connected = false;// 是否连接成功标志位
 	private boolean leader = false;// 是否是主节点标志位
 
-	private Leader(String host, String port) {
+	/**
+	 * 新建主节点选举对象,阻塞最多30秒
+	 *
+	 * @param host zk主机地址
+	 * @param port zk服务端口
+	 */
+	public Leader(String host, String port) {
 		this.host = host;
 		this.port = port;
 		this.previousNodeWatcher = new PreviousNodeWatcher(this);
+		registered = this.connectRegister();
 	}
 
 	/**
-	 * 初始Leader单例对象
+	 * 销毁本主节点选举对象
 	 *
-	 * @param zkHost
-	 *            ZK主机地址
-	 * @param zkPort
-	 *            ZK服务端口
-	 * @return Leader对象
+	 * @return
 	 */
-	public static boolean init(String zkHost, String zkPort) {
-		if (zkLeader == null) {
-			zkLeader = new Leader(zkHost, zkPort);
-			return zkLeader.connectZookeeper();
-		}
-		return true;
+	public boolean destroy() {
+		return this.disconnectZooKeeper();
 	}
 
 	/**
-	 * 是否是主节点
+	 * 本主节点选举对象是否获取主节点地位
 	 *
-	 * @return true/false
+	 * @return
 	 */
-	public static boolean isLeader() {
-		return zkLeader != null && zkLeader.leader;
+	public boolean isLeader() {
+		return this.leader;
 	}
 
 	/**
-	 * 关闭ZK连接
+	 * 本主节点选举对象是否与ZOOKEEPER连接成功
+	 *
+	 * @return
 	 */
-	public static boolean disconnect() {
-		return zkLeader != null && zkLeader.disconnectZooKeeper();
+	public boolean isConnected() {
+		return this.connected;
 	}
 
-	private boolean connectZookeeper() {
+	/**
+	 * 本主节点选举对象是否成功在ZOOKEEPER中注册
+	 *
+	 * @return
+	 */
+	public boolean isRegistered() {
+		return this.registered;
+	}
+
+	/**
+	 * <pre>
+	 * 如果阻塞30秒时间内没有连接成功，Leader将不创建子节点，finalNodePath将为null(即本Leader对象失效)，
+	 * 30秒之后即使连接成功connected被置为true(Zookeeper异步连接成功又将connected置为true)了，Leader的连接也视为失败
+	 * 这时候就需要一个标志位来说明这个Leader虽然连接ZK成功，但没有注册子节点，也是无效的leader竞争
+	 * </pre>
+	 * <p>
+	 * {@link xuyihao.zk.client.core.Leader#registered}
+	 *
+	 * @return 是否注册成功
+	 */
+	private boolean connectRegister() {
 		try {
 			zooKeeper = new ZooKeeper(host + ":" + port, 60000, event -> {
 				if (event.getState() == Watcher.Event.KeeperState.AuthFailed) {
+					connected = false;
 					leader = false;
 				} else if (event.getState() == Watcher.Event.KeeperState.Disconnected) {
+					connected = false;
 					leader = false;
 				} else if (event.getState() == Watcher.Event.KeeperState.Expired) {
+					connected = false;
 					leader = false;
 				} else {
 					if (event.getType() == Watcher.Event.EventType.None) {// 说明连接成功了
@@ -109,6 +133,7 @@ public class Leader {
 
 				// 检查一次是否是主节点
 				checkLeader();
+				return true;
 			} else {
 				logger.warn("Connect zookeeper failed. Time consumes 30 s");
 				return false;
@@ -117,7 +142,6 @@ public class Leader {
 			logger.warn(e.getMessage(), e);
 			return false;
 		}
-		return true;
 	}
 
 	private boolean disconnectZooKeeper() {
@@ -166,6 +190,7 @@ public class Leader {
 	}
 
 	private class PreviousNodeWatcher implements Watcher {
+
 		private Leader context;
 
 		PreviousNodeWatcher(Leader context) {
@@ -179,5 +204,19 @@ public class Leader {
 				context.checkLeader();
 			}
 		}
+
+	}
+
+	@Override
+	public String toString() {
+		return "Leader{" +
+				"finalNodePath='" + finalNodePath + '\'' +
+				", registered=" + registered +
+				", connected=" + connected +
+				", leader=" + leader +
+				", host='" + host + '\'' +
+				", port='" + port + '\'' +
+				", zooKeeper=" + zooKeeper +
+				'}';
 	}
 }
