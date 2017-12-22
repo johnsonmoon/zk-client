@@ -55,7 +55,7 @@ public class Lock {
 	 */
 	public static Lock create(String host, String port, String lock) {
 		Lock zkLock = new Lock(host, port, lock);
-		zkLock.connectZooKeeper();
+		zkLock.connectRegister();
 		return zkLock;
 	}
 
@@ -68,14 +68,14 @@ public class Lock {
 		if (!connected)
 			return false;
 		while (!needInterrupt) {
+			if (acquireLock) {
+				return true;
+			}
+
 			try {
 				Thread.sleep(1000);
 			} catch (Exception e) {
 				logger.warn(e.getMessage(), e);
-			}
-
-			if (acquireLock) {
-				return true;
 			}
 		}
 		return false;
@@ -110,15 +110,23 @@ public class Lock {
 		return true;
 	}
 
-	private boolean connectZooKeeper() {
+	/**
+	 * 连接并注册锁竞争
+	 * 
+	 * @return
+	 */
+	private void connectRegister() {
 		try {
 			// 连接ZK
 			zooKeeper = new ZooKeeper(host + ":" + port, 60000, event -> {
 				if (event.getState() == Watcher.Event.KeeperState.AuthFailed) {
+					connected = false;
 					needInterrupt = true;
 				} else if (event.getState() == Watcher.Event.KeeperState.Disconnected) {
+					connected = false;
 					needInterrupt = true;
 				} else if (event.getState() == Watcher.Event.KeeperState.Expired) {
+					connected = false;
 					needInterrupt = true;
 				} else {
 					if (event.getType() == Watcher.Event.EventType.None) {// 连接成功
@@ -151,13 +159,11 @@ public class Lock {
 			} else {
 				needInterrupt = true;
 				logger.warn("Connect zookeeper failed. Time consumes 30 s");
-				return false;
 			}
 		} catch (Exception e) {
+			needInterrupt = true;
 			logger.warn(e.getMessage(), e);
-			return false;
 		}
-		return true;
 	}
 
 	private void checkAcquire() {
@@ -172,7 +178,6 @@ public class Lock {
 			} else {
 				watchPreviousNode(childrenList);
 			}
-
 		} catch (Exception e) {
 			logger.warn(e.getMessage(), e);
 			disconnectZooKeeper();
@@ -206,17 +211,9 @@ public class Lock {
 
 		@Override
 		public void process(WatchedEvent event) {
-			if (event.getState() == Watcher.Event.KeeperState.AuthFailed) {
-				context.needInterrupt = true;
-			} else if (event.getState() == Watcher.Event.KeeperState.Disconnected) {
-				context.needInterrupt = true;
-			} else if (event.getState() == Watcher.Event.KeeperState.Expired) {
-				context.needInterrupt = true;
-			} else {
-				// 节点被删除了，说明这个节点释放了锁
-				if (event.getType() == Event.EventType.NodeDeleted) {
-					context.checkAcquire();
-				}
+			// 节点被删除了，说明这个节点释放了锁
+			if (event.getType() == Event.EventType.NodeDeleted) {
+				context.checkAcquire();
 			}
 		}
 	}
