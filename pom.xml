@@ -14,7 +14,7 @@
 	</properties>
 
 	<build>
-		<finalName>zk-client-${version}</finalName>
+		<finalName>zk-client-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
