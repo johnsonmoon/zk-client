@@ -9,8 +9,8 @@ Leader selector zookeeper reconnection.
 ### 1.zk server node data viewer
 - run the viewer
 ```
-windows java -classpath .;%CLASSPATH%;  xuyihao.zk.client.ZKViewer
-linux   java -classpath .:$CLASSPATH:  xuyihao.zk.client.ZKViewer
+windows java -classpath .;%CLASSPATH%;  com.github.johnsonmoon.zk.client.ZKViewer
+linux   java -classpath .:$CLASSPATH:  com.github.johnsonmoon.zk.client.ZKViewer
 ```
 - console examples
 ```

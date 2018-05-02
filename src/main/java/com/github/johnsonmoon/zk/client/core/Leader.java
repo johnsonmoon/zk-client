@@ -1,11 +1,10 @@
-package xuyihao.zk.client.core;
+package com.github.johnsonmoon.zk.client.core;
 
+import com.github.johnsonmoon.zk.client.core.common.Operations;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import xuyihao.zk.client.core.common.Operations;
 
 import java.util.List;
 
@@ -91,7 +90,7 @@ public class Leader {
 	 * 这时候就需要一个标志位来说明这个Leader虽然连接ZK成功，但没有注册子节点，也是无效的leader竞争
 	 * </pre>
 	 * <p>
-	 * {@link xuyihao.zk.client.core.Leader#registered}
+	 * {@link Leader#registered}
 	 *
 	 * @return 是否注册成功
 	 */

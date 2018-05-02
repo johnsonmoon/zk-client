@@ -1,7 +1,7 @@
-package xuyihao.zk.client;
+package com.github.johnsonmoon.zk.client;
 
+import com.github.johnsonmoon.zk.client.core.Lock;
 import org.junit.Test;
-import xuyihao.zk.client.core.Lock;
 
 import java.util.ArrayList;
 import java.util.List;

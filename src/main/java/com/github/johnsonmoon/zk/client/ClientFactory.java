@@ -1,4 +1,4 @@
-package xuyihao.zk.client;
+package com.github.johnsonmoon.zk.client;
 
 /**
  * Created by xuyh at 2017/12/14 14:49.
@@ -9,7 +9,7 @@ public class ClientFactory {
 	/**
 	 * 获取ZKClient实例
 	 *
-	 * @return instance of {@link xuyihao.zk.client.ZKClient}
+	 * @return instance of {@link ZKClient}
 	 */
 	public static ZKClient getZkClient() {
 		if (zkClient == null) {
@@ -25,7 +25,7 @@ public class ClientFactory {
 	 *            zk主机地址
 	 * @param zkPort
 	 *            zk服务端口
-	 * @return instance of {@link xuyihao.zk.client.ZKClient}
+	 * @return instance of {@link ZKClient}
 	 */
 	public static ZKClient getZKClient(String zkHost, String zkPort) {
 		if (zkClient == null) {

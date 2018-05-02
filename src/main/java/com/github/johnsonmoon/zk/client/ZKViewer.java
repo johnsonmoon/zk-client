@@ -1,4 +1,4 @@
-package xuyihao.zk.client;
+package com.github.johnsonmoon.zk.client;
 
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;

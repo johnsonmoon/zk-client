@@ -1,4 +1,4 @@
-package xuyihao.zk.client;
+package com.github.johnsonmoon.zk.client;
 
 /**
  * 启动多个测试进程，并观察控制台消息，适时结束其中单个进程，观察控制台消息

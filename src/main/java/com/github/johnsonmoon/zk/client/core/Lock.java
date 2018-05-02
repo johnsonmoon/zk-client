@@ -1,11 +1,10 @@
-package xuyihao.zk.client.core;
+package com.github.johnsonmoon.zk.client.core;
 
+import com.github.johnsonmoon.zk.client.core.common.Operations;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import xuyihao.zk.client.core.common.Operations;
 
 import java.util.List;
 

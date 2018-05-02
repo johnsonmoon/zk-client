@@ -1,9 +1,9 @@
-package xuyihao.zk.client;
+package com.github.johnsonmoon.zk.client;
 
+import com.github.johnsonmoon.zk.client.core.Leader;
+import com.github.johnsonmoon.zk.client.core.Lock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xuyihao.zk.client.core.Leader;
-import xuyihao.zk.client.core.Lock;
 
 /**
  * Created by xuyh at 2017/12/14 14:51.
@@ -44,7 +44,7 @@ public class ZKClient {
 	 * 创建路径为lockPath的分布式任务锁
 	 *
 	 * @param lockPath 分布式任务锁路径
-	 * @return instance of {@link xuyihao.zk.client.core.Lock}
+	 * @return instance of {@link Lock}
 	 */
 	public Lock createLock(String lockPath) {
 		return Lock.create(zkHost, zkPort, lockPath);

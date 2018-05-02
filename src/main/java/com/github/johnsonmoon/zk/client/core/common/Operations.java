@@ -1,4 +1,4 @@
-package xuyihao.zk.client.core.common;
+package com.github.johnsonmoon.zk.client.core.common;
 
 import java.util.List;
 
