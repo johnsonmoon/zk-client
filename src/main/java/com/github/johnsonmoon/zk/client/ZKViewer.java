@@ -21,6 +21,7 @@ public class ZKViewer {
     private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String... args) {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "warn");
         System.out.println("Input \"help\" for more ... ...");
         String input = "";
         while (true) {
